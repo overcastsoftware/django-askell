@@ -40,3 +40,15 @@ Create your webhook, and then obtain your webhook secret and put it in your sett
 ```python
 ASKELL_WEBHOOK_SECRET = 'my-secret'
 ```
+
+# TODO
+
+[ ] Document webhook processor
+[ ] Document views
+[ ] Implement subscription handling
+
+# Release notes
+## Version 0.1
+* Support for creating Payment objects
+* Support for webhooks processing and verification
+* Default webhook processors for payment created, and changed
