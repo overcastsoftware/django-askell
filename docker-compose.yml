@@ -1,0 +1,37 @@
+version: '3'
+
+volumes:
+  postgres-data:
+  node_modules:
+  
+services:
+  web:
+    container_name: "test_project"
+    build: ./
+    working_dir: /code/test_project
+    # command: tail -f /dev/null
+    command: bash -c "./manage.py migrate && ./manage.py runserver 0.0.0.0:8000"
+    restart: "no"
+    volumes:
+      - ./test_project:/code/test_project:delegated,rw
+      - ./askell:/code/askell/askell:delegated,rw
+    ports:
+      - "8000:8000"
+      - 3000:3000
+    environment:
+      DATABASE_URL: "postgres://test_project:changeme@db/test_project"
+      PYTHONPATH: "/code/test_project:$PYTHONPATH"
+    depends_on:
+      - db
+  db:
+    container_name: "test_projectdb"
+    image: postgres:12.3-alpine
+    environment:
+      POSTGRES_USER: test_project
+      POSTGRES_DB: test_project
+      POSTGRES_PASSWORD: changeme
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    restart: "no"
+    expose:
+      - "5432"
