@@ -73,8 +73,8 @@ jobs:
         }''' > test_project/settings.py
     - name: Run migrations
       run: cd test_project && python manage.py migrate
-    - name: Collect static files
-      run: cd test_project && python manage.py collectstatic --noinput
+    # - name: Collect static files
+    #   run: cd test_project && python manage.py collectstatic --noinput
     - name: Run tests
       run: |
         cd test_project && python manage.py test

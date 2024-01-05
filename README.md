@@ -16,3 +16,9 @@ INSTALLED_APPS = [
     # ... other apps
 ]
 ```
+
+Obtain your webhook secret from askell.is and put it in your settings file or environment:
+
+```python
+ASKELL_WEBHOOK_SECRET = 'my-secret'
+```
