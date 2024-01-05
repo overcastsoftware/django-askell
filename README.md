@@ -1,7 +1,7 @@
 # django-askell
 Áskell integration for Django and Wagtail (optional)
 
-# Installation
+## Installation
 
 ```shell
 pip install django-askell
@@ -41,14 +41,42 @@ Create your webhook, and then obtain your webhook secret and put it in your sett
 ASKELL_WEBHOOK_SECRET = 'my-secret'
 ```
 
-# TODO
+## Webhook handlers
 
-[ ] Document webhook processor
+You can register new webhook handlers if you want to implement custom logic when something happens in Áskell.
+These are the default webhook handlers:
+
+```
+askell.webhook_handlers.payment_created
+askell.webhook_handlers.payment_changed
+```
+
+Registering a new handler is simple:
+
+```python
+from askell.webhooks import register_webhook_handler
+
+@register_webhook_handler
+def payment_settled(request, event, data):
+    from .models import Payment
+    if event == 'payment.changed':
+        if data['state'] == 'settled':
+            # do something here
+    return True
+```
+
+## TODO
+
+[ ] Document webhook handlers
 [ ] Document views
 [ ] Implement subscription handling
 
-# Release notes
-## Version 0.1
+## Release notes
+
+### Version 0.1.1
+* Changed the way webhook handlers are imported and documented
+
+### Version 0.1
 * Support for creating Payment objects
 * Support for webhooks processing and verification
-* Default webhook processors for payment created, and changed
+* Default webhook handlers for payment created, and changed
