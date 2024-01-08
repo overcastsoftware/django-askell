@@ -1,6 +1,11 @@
 # django-askell
 Áskell integration for Django and Wagtail (optional)
 
+<a href="https://github.com/overcastsoftware/django-askell/actions">
+    <img src="https://github.com/overcastsoftware/django-askell/workflows/django-askell%20CI/badge.svg" alt="Build Status" />
+</a>
+
+
 ## Installation
 
 ```shell
@@ -67,9 +72,9 @@ def payment_settled(request, event, data):
 
 ## TODO
 
-[ ] Document webhook handlers
-[ ] Document views
-[ ] Implement subscription handling
+- [ ] Document webhook handlers
+- [ ] Document views
+- [ ] Implement subscription handling
 
 ## Release notes
 
