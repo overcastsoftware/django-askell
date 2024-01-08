@@ -67,9 +67,9 @@ def payment_settled(request, event, data):
 
 ## TODO
 
-[ ] Document webhook handlers
-[ ] Document views
-[ ] Implement subscription handling
+- [ ] Document webhook handlers
+- [ ] Document views
+- [ ] Implement subscription handling
 
 ## Release notes
 
