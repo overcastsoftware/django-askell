@@ -73,6 +73,9 @@ def payment_settled(request, event, data):
 
 ## Release notes
 
+### Version 0.1.2
+* Added logging mechanism for debugging
+
 ### Version 0.1.1
 * Changed the way webhook handlers are imported and documented
 

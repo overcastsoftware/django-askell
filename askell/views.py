@@ -2,6 +2,7 @@ import hmac
 import base64
 from io import BytesIO
 import json
+import logging
 import hashlib
 import requests
 
@@ -22,12 +23,20 @@ from .utils import get_customer_reference_from_user
 from .models import Payment
 from .webhooks import run_webhook_handlers
 
+logger = logging.getLogger('django-askell')
+
 
 WEBHOOK_SECRET = ASKELL_WEBHOOK_SECRET.encode()
 WEBHOOK_DIGEST_TYPE = 'sha512'
 
 # also available at `thorn.utils.hmac.verify`
 def verify(hmac_header, digest_method, secret, message):
+    logger.debug(f'''Verifying webhook signature:
+                    HMAC header: {hmac_header}
+                    Digest method: {digest_method}
+                    Secret: {secret}
+                    Message: {message}
+                ''')
     digestmod = getattr(hashlib, digest_method)
     signed = base64.b64encode(
         hmac.new(secret, message, digestmod).digest(),
@@ -43,6 +52,12 @@ class WebhookHandlerView(APIView):
         event = request.META.get('HTTP_HOOK_EVENT')
         body = request.body
         error_message = 'Could not verify webhook signature. Check your webhook secret and digest type.'
+
+        logger.debug(f'''Webhook received:
+                     Event: {event}
+                     Body: {body}
+                     Digest: {digest}''')
+
         if verify(digest, WEBHOOK_DIGEST_TYPE, WEBHOOK_SECRET, body):
             payload = json.loads(body)
             event = payload['event']
@@ -52,6 +67,8 @@ class WebhookHandlerView(APIView):
                 return Response({'status': 'success'}, status=200)
             else:
                 error_message = 'Could not run webhook handlers.'
+        else:
+            logger.warning(f'Webhook signature verification failed: {error_message}')
 
         return Response({'status': 'error', 'error': error_message}, status=400)
 
