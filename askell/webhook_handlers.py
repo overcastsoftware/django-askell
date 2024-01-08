@@ -5,7 +5,6 @@ def payment_created(request, event, data):
     from .models import Payment
     if event == 'payment.created':
         payment_data = {key: data[key] for key in Payment.KEYS_TO_COPY}
-        payment_data['user'] = request.user
         uuid = data.pop('uuid')
         Payment.objects.get_or_create(uuid=uuid, defaults=payment_data)
     return True

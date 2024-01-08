@@ -43,7 +43,7 @@ class Payment(models.Model):
             'reference': self.reference,
             'amount': self.amount,
             'currency': self.currency,
-            'user': self.user.id,
+            'user': self.user.id if self.user else None,
         }
 
 register_webhook_handler(payment_created)

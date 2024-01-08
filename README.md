@@ -78,6 +78,15 @@ def payment_settled(request, event, data):
 
 ## Release notes
 
+### Version 0.1.5
+* Fixed a bug with imports
+
+### Version 0.1.4
+* Fixed a bug in the Payment detail view
+
+### Version 0.1.3
+* Fixed a bug in webhook handler
+
 ### Version 0.1.2
 * Added logging mechanism for debugging
 
