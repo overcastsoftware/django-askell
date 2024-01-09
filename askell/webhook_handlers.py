@@ -15,8 +15,5 @@ def payment_changed(request, event, data):
         payment = Payment.objects.get(uuid=data['uuid'])
         for attr, val in data.items():
             setattr(payment, attr, val)
-        if data['state'] == 'settled':
-            payment.settled = True
-            payment.settled_at = timezone.now()
         payment.save()
     return True

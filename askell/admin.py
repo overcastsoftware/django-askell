@@ -5,8 +5,8 @@ from .models import Payment
 
 class PaymentAdmin(admin.ModelAdmin):
     model = Payment
-    list_display = ('reference', 'created_at', 'settled', 'amount', 'currency')
-    list_filter = ('settled', 'created_at')
+    list_display = ('reference', 'created_at', 'state', 'amount', 'currency')
+    list_filter = ('state', 'created_at')
 
     def has_add_permission(self, request):
         return False

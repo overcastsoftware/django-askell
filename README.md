@@ -72,11 +72,14 @@ def payment_settled(request, event, data):
 
 ## TODO
 
-- [ ] Document webhook handlers
+- [x] Document webhook handlers
 - [ ] Document views
 - [ ] Implement subscription handling
 
 ## Release notes
+
+### Version 0.1.6
+* Added support for multiple states
 
 ### Version 0.1.5
 * Fixed a bug with imports

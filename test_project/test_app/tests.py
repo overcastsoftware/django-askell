@@ -72,7 +72,7 @@ class TestViews(BaseTestCase):
     def test_webhook_payment_settled(self):
         payment_count_before = Payment.objects.count()
         payment = Payment.objects.get(uuid="830a1b4a-113f-41f5-8112-d82e2b0b3956")
-        self.assertFalse(payment.settled)
+        self.assertFalse(payment.state == "settled")
         payload = '{"event": "payment.changed", "ref": null, "sender": "tumi@overcast.is", "data": {"uuid": "830a1b4a-113f-41f5-8112-d82e2b0b3956", "amount": "1.0000", "currency": "ISK", "description": "wesd", "reference": "q324erdf", "state": "settled", "created_at": "2024-01-05T11:21:49.425825Z", "updated_at": "2024-01-05T11:21:53.664259Z", "transactions": [{"external_reference": "400511385256", "data": {"id": "400511385256", "receipt": {"acquirerReferenceNumber": "385256", "authenticationMethod": "NONE", "authorizationCode": "593443", "authorizationResponseTime": "00:00:00", "authorizedAmount": 100, "cardInformation": {"cardCategory": "Corporate", "cardProductCategory": "MCP", "cardScheme": "M", "cardUsage": "Credit", "issuingCountry": "IS", "outOfScaScope": false}, "correlationID": "71ca5168-100e-4c05-9b08-d50512c1ea6e", "currency": "352", "isCardPresent": false, "isSuccess": true, "marketInformation": {"acquirerRegion": "Rapyd Europe EEA", "marketName": "Domestic", "merchantCountry": "IS"}, "maskedCardNumber": "555016******1024", "responseCode": "00-I", "responseDescription": "Approved or completed successfully.", "responseTime": "00:00:03", "transactionID": "400511385256", "transactionLifecycleId": "ABC2220020105", "transactionType": "12"}, "status": "settled"}, "state": "settled", "uuid": "e858bc16-3a62-41a7-a087-367ed02dc63e", "fail_code": null, "refund_code": null, "cancel_code": null, "amount": "1.00", "currency": "ISK", "payment_method": {"verified": true, "canceled": false, "valid_until": "2026-10-01T00:00:00Z", "display_info": "XXXX-XXXX-XXXX-1024 (MasterCard)", "credit_card": true}, "created_at": "2024-01-05T11:21:49.455071Z"}]}}'
         headers = {
             'Hook-Subscription': 'b03230d7-1005-44fc-b297-b3d2abf0fcd6',
@@ -84,4 +84,4 @@ class TestViews(BaseTestCase):
         payment_count_after = Payment.objects.count()
         self.assertEqual(payment_count_before, payment_count_after)
         payment.refresh_from_db()
-        self.assertTrue(payment.settled)
+        self.assertTrue(payment.state == "settled")
