@@ -3,3 +3,4 @@ wagtail<5.2
 dj-database-url==0.4.1
 psycopg2-binary>=2.7,<3.0
 debugpy==1.5.1
+ruff==0.1.11

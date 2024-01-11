@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from askell.client import client
-from askell.models import Plan, Subscription
+from askell.models import Plan
 
 
 class Command(BaseCommand):

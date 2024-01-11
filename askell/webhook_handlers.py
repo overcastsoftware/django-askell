@@ -1,4 +1,3 @@
-from django.utils import timezone
 
 
 def payment_created(request, event, data):

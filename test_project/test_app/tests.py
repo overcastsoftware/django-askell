@@ -1,4 +1,3 @@
-import json
 import http.client
 from unittest.mock import patch
 
@@ -64,7 +63,7 @@ class TestViews(BaseTestCase):
             'HOOK_EVENT': 'payment.created',
             'HOOK_DELIVERY': 'dc3511de-0af7-4f3c-84a8-06a3e60439c5',
         }
-        response = self.client.post('/askell/webhook/', data=payload, headers=headers, content_type='application/json')
+        self.client.post('/askell/webhook/', data=payload, headers=headers, content_type='application/json')
         payment_count_after = Payment.objects.count()
         self.assertEqual(payment_count_before, payment_count_after)
 
@@ -80,7 +79,7 @@ class TestViews(BaseTestCase):
             'Hook-Event': 'payment.changed',
             'Hook-Delivery': '6b5583cc-727c-4d01-950d-7b8a2f683d09',
         }
-        response = self.client.post('/askell/webhook/', data=payload, headers=headers, content_type='application/json')
+        self.client.post('/askell/webhook/', data=payload, headers=headers, content_type='application/json')
         payment_count_after = Payment.objects.count()
         self.assertEqual(payment_count_before, payment_count_after)
         payment.refresh_from_db()
