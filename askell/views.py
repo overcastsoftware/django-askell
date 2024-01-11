@@ -1,6 +1,5 @@
 import hmac
 import base64
-from io import BytesIO
 import json
 import logging
 import hashlib
@@ -10,15 +9,12 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
 
 from django.utils.translation import gettext as _
-from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.decorators import action
 
-from .settings import ASKELL_WEBHOOK_SECRET, ASKELL_ENDPOINT, ASKELL_SECRET_KEY, ASKELL_CUSTOMER_REFERENCE_USER_FIELD
+from .settings import ASKELL_WEBHOOK_SECRET, ASKELL_ENDPOINT, ASKELL_SECRET_KEY
 from .utils import get_customer_reference_from_user
 from .models import Payment
 from .webhooks import run_webhook_handlers
@@ -181,9 +177,6 @@ class CustomerView(APIView):
 class PaymentMethodView(APIView):
     
     def post(self, request, format=None):
-        headers = {"Authorization": f"Api-Key {ASKELL_SECRET_KEY}"}
-        token = request.data['token']
-
         customer_reference = get_customer_reference_from_user(request.user)
 
         if not customer_reference:

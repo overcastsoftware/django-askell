@@ -1,5 +1,4 @@
 import requests
-from django.http import HttpResponseBadRequest
 
 # from .models import Plan, Subscription
 from .settings import ASKELL_ENDPOINT, ASKELL_SECRET_KEY
