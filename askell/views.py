@@ -161,8 +161,6 @@ class CustomerView(APIView):
             response = r.json()
 
             if r.status_code < 300:
-                request.user.askell_reference = request.user.id
-                request.user.save()
                 return Response({'status': 'success', 'response': response})
             else:
                 return Response({'status': 'error', 'message': response['error']}, status=r.status_code)
@@ -178,8 +176,9 @@ class PaymentMethodView(APIView):
     
     def post(self, request, format=None):
         customer_reference = get_customer_reference_from_user(request.user)
-
-        if not customer_reference:
+        headers = {"Authorization": f"Api-Key {ASKELL_SECRET_KEY}"}
+        c_response = requests.get(f"{ASKELL_ENDPOINT}/customers/{customer_reference}/", headers=headers)
+        if c_response.status_code == 404:
             s = CustomerView().post(request, format=None)
             if s.status_code > 299:
                 return s

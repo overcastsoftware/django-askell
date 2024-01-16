@@ -78,6 +78,9 @@ def payment_settled(request, event, data):
 
 ## Release notes
 
+### Version 0.1.7
+* Fixed a bug in creating a customer
+
 ### Version 0.1.6
 * Added support for multiple states
 
