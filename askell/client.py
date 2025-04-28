@@ -35,8 +35,9 @@ class AskellClient:
         response = requests.get(self._build_url(path), headers=self._auth)
         return response.json()
     
-    def make_payment(self, user, amount, currency, reference, description=None, payment_options=None):
-        customer_reference = get_customer_reference_from_user(user)
+    def make_payment(self, user, amount, currency, reference, description=None, payment_options=None, customer_reference=None):
+        if customer_reference is None:
+            customer_reference = get_customer_reference_from_user(user)
         path = '/payments/'
         data = {
             "customer_reference": customer_reference,
