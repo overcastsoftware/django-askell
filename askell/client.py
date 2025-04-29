@@ -35,9 +35,8 @@ class AskellClient:
         response = requests.get(self._build_url(path), headers=self._auth)
         return response.json()
     
-    def make_payment(self, user, amount, currency, reference, description=None, payment_options=None, customer_reference=None):
-        if customer_reference is None:
-            customer_reference = get_customer_reference_from_user(user)
+    def make_payment(self, user, amount, currency, reference, description=None, payment_options=None):
+        customer_reference = get_customer_reference_from_user(user)
         path = '/payments/'
         data = {
             "customer_reference": customer_reference,
@@ -50,7 +49,7 @@ class AskellClient:
 
         if payment_options:
             # check that only allowed keys in dict are "payment_processor" == "claim", claimtemplate, claimrule or payment_date:
-            allowed_keys = ["payment_processor", "claimtemplate", "claimrule", "payment_date"]
+            allowed_keys = ["payment_processor", "claimtemplate", "claimrule", "payment_date", "payor_id"]
             for key in payment_options.keys():
                 if key not in allowed_keys:
                     raise ValueError(f"Invalid key '{key}' in payment options. Allowed keys are: {allowed_keys}")
@@ -59,7 +58,7 @@ class AskellClient:
                         raise ValueError(f"Invalid value '{payment_options[key]}' for key 'payment_processor'. Allowed values are: ['claim']")
             data["payment_options"] = payment_options
 
-        response = requests.post(self._build_url(path), headers=self._auth, data=data)
+        response = requests.post(self._build_url(path), headers=self._auth, json=data)
         return response.json()
     
     def get_payment(self, uuid):
