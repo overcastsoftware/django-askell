@@ -74,7 +74,7 @@ class AskellClient:
         if response.status_code == 200:
             return {'status': 'success', 'response': response.json()}
         else:
-            return {'status': 'error', 'message': response['error']}
+            return {'status': 'error', 'message': "Could not get customer"}
 
 
     def create_customer(self, user):
@@ -91,7 +91,7 @@ class AskellClient:
         if response.status_code < 300:
             return {'status': 'success', 'response': response.json()}
         else:
-            return {'status': 'error', 'message': response['error']}
+            return {'status': 'error', 'message': "Could not create customer"}
 
 
     # def subscribe(self, user=None, plan=None):
