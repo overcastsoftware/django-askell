@@ -66,6 +66,24 @@ class AskellClient:
         response = requests.get(self._build_url(path), headers=self._auth)
         return response.json()
 
+    def get_customer(self, user):
+        customer_reference = get_customer_reference_from_user(user)
+        path = '/customers/{}/'.format(customer_reference)
+        response = requests.get(self._build_url(path), headers=self._auth)
+        return response.json()
+
+    def create_customer(self, user):
+        customer_reference = get_customer_reference_from_user(user)
+        path = '/customers/'
+        data = {
+            "customer_reference": customer_reference,
+            "email": user.email,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+        }
+        response = requests.post(self._build_url(path), headers=self._auth, json=data)
+        return response.json()
+
     # def subscribe(self, user=None, plan=None):
     #     if user and plan:
     #         subscription = Subscription.objects.get_or_create(user=user)
