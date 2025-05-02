@@ -70,7 +70,12 @@ class AskellClient:
         customer_reference = get_customer_reference_from_user(user)
         path = '/customers/{}/'.format(customer_reference)
         response = requests.get(self._build_url(path), headers=self._auth)
-        return response.json()
+
+        if response.status_code == 200:
+            return {'status': 'success', 'response': response.json()}
+        else:
+            return {'status': 'error', 'message': response['error']}
+
 
     def create_customer(self, user):
         customer_reference = get_customer_reference_from_user(user)
@@ -82,7 +87,12 @@ class AskellClient:
             "last_name": user.last_name,
         }
         response = requests.post(self._build_url(path), headers=self._auth, json=data)
-        return response.json()
+
+        if response.status_code < 300:
+            return {'status': 'success', 'response': response.json()}
+        else:
+            return {'status': 'error', 'message': response['error']}
+
 
     # def subscribe(self, user=None, plan=None):
     #     if user and plan:
