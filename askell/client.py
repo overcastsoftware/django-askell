@@ -94,11 +94,16 @@ class AskellClient:
             return {'status': 'error', 'message': "Could not create customer"}
 
 
-    # def subscribe(self, user=None, plan=None):
-    #     if user and plan:
-    #         subscription = Subscription.objects.get_or_create(user=user)
-    #         subscription.plan = plan
-    #         subscription.save()  
+    def create_checkout(self, plan_variant_id, capture_only=False):
+        path = '/checkout/'
+        data = {
+            "plan_variant_id": plan_variant_id,
+            "capture_only": capture_only
+        }
+        response = requests.post(self._build_url(path), headers=self._auth, json=data)
+        return response.json()
+
+
 
 
 client = AskellClient(ASKELL_SECRET_KEY, endpoint=ASKELL_ENDPOINT)

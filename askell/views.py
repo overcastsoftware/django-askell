@@ -224,3 +224,28 @@ class PaymentView(APIView):
         except Exception as e:
             print(e)
             return Response({'status': 'error', 'message': _('Server error. Please try again later.')}, status=r.status_code)
+        
+
+@method_decorator(login_required, name='dispatch')
+class CheckoutView(APIView):
+
+    def post(self, request):
+        try:
+            headers = {"Authorization": f"Api-Key {ASKELL_SECRET_KEY}"}
+
+            post_data = {
+                "plan": request.data['plan'],
+                "capture_only": request.data.get('capture_only', False),
+            }
+
+            url = f"{ASKELL_ENDPOINT}/checkouts/"
+            r = requests.post(url, headers=headers, json=post_data)
+            response = r.json()
+
+            if r.status_code < 300:
+                return Response({'status': 'success', 'response': response})
+            else:
+                return Response({'status': 'error', 'message': response['error']}, status=r.status_code)
+
+        except Exception as e:
+            return Response({'status': 'error', 'message': _('Server error. Please try again later.')}, status=r.status_code)

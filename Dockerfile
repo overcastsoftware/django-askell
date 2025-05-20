@@ -21,6 +21,8 @@ RUN mkdir /code/askell
 COPY ./askell /code/askell/askell
 COPY ./setup.py /code/askell/
 COPY ./README.md /code/askell/
+COPY ./build.sh /code/askell/
+COPY ./release.sh /code/askell/
 
 RUN cd /code/askell/ \
     && pip install -e .
