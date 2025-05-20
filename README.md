@@ -38,6 +38,12 @@ urlpatterns = [
 ]
 ```
 
+Then go to Áskell, create a public/private key pair and add these keys to your settings file or environment in your project:
+```python
+ASKELL_PUBLIC_KEY = 'my-public-key'
+ASKELL_SECRET_KEY = 'my-secret-key'
+```
+
 To complete your setup, it is recommended to set up a webhook in Áskell's dashboard pointing to your website's URL. If your website has the domain `https://example.com` and you have added the app urls to your project, then the view that receives the webhooks is located at `https://example.com/askell/webhook/`.
 
 Create your webhook, and then obtain your webhook secret and put it in your settings file or environment in your project:
