@@ -24,8 +24,8 @@ documentation_extras = [
 
 setup(
     name='django-askell',
-    version='0.1.16',
-    packages=['askell'],
+    version='0.1.18',
+    packages=['askell', 'askell.wagtail', 'askell.migrations', 'askell.management', 'askell.management.commands'],
     include_package_data=True,
     license='MIT',
     description='Recurring payments solution Askell integration for Django and Wagtail (optional)',

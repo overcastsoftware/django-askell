@@ -86,52 +86,24 @@ register_webhook_handler(payment_changed)
 #         FieldPanel('subscription_id'),
 #     ]
 
-# @register_snippet
-# class Plan(ClusterableModel):
-#     name = models.CharField(max_length=512)
-#     alternative_name = models.CharField(max_length=512, blank=True, null=True)
-#     reference = models.CharField(max_length=512, blank=True, null=True)
-#     interval = models.CharField(max_length=50, blank=True, null=True)
-#     interval_count = models.IntegerField(blank=True, null=True)
-#     amount = models.DecimalField(max_digits=19, decimal_places=4, blank=True, null=True)
-#     currency = models.CharField(max_length=10, blank=True, null=True)
-#     trial_period_days = models.IntegerField(blank=True, null=True)
-#     description = models.TextField(blank=True, null=True)
-#     description_richtext = RichTextField(blank=True, null=True)
-#     enabled = models.BooleanField(default=False)
-#     private = models.BooleanField(default=False)
-#     electronic_only = models.BooleanField(default=True)
-#     plan_id = models.PositiveIntegerField(unique=True)
-#     offer = models.BooleanField(default=False)
-#     offer_code = models.CharField(max_length=255, default='', blank=True)
-    
-#     panels = [
-#         FieldPanel('name'),
-#         FieldPanel('description'),
-#         FieldPanel('description_richtext'),
-#         FieldPanel('interval'),
-#         FieldPanel('interval_count'),
-#         FieldPanel('amount'),
-#         FieldPanel('currency'),
-#         FieldPanel('trial_period_days'),
-#         FieldPanel('enabled'),
-#         FieldPanel('private'),
-#         MultiFieldPanel([
-#             FieldPanel('offer'),
-#             FieldPanel('offer_code'),
-#         ], heading="Offer parameters"),
-#         FieldPanel('plan_id'),
-#         FieldPanel('alternative_name'),
-#         FieldPanel('electronic_only'),
-#         FieldPanel('reference'),
-#         InlinePanel('groups', heading="Groups to assign to users in plan"),
-#     ]
 
-#     def __str__(self):
-#         return self.name
+class Plan(models.Model):
+    plan_id = models.PositiveIntegerField(primary_key=True)
+    name = models.CharField(max_length=512)
+    alternative_name = models.CharField(max_length=512, blank=True, null=True)
+    reference = models.CharField(max_length=512, blank=True, null=True)
+    interval = models.CharField(max_length=50, blank=True, null=True)
+    interval_count = models.IntegerField(blank=True, null=True)
+    amount = models.DecimalField(max_digits=19, decimal_places=4, blank=True, null=True)
+    currency = models.CharField(max_length=10, blank=True, null=True)
+    trial_period_days = models.IntegerField(blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
+    enabled = models.BooleanField(default=False)
+    private = models.BooleanField(default=False)
+    electronic_only = models.BooleanField(default=True)
 
-#     def subscription_groups(self):
-#         return ', '.join([g.group.name for g in self.groups.all()])
+    def __str__(self):
+        return self.name
 
 
 # @register_snippet

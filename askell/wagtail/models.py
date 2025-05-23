@@ -1,6 +1,6 @@
 
 # Create your models here.
-from askell.models import Payment
+from askell.models import Payment, Plan
 
 from wagtail.admin.panels import FieldPanel
 from wagtail.snippets.models import register_snippet
@@ -45,3 +45,17 @@ class PaymentViewSet(SnippetViewSet):
     ]
 
 register_snippet(PaymentViewSet)
+
+
+class PlanViewSet(SnippetViewSet):
+    model = Plan
+    add_view_class = CustomCreateView
+    permission_policy = CustomModelPermissionPolicy(Plan)
+
+    panels = [
+        FieldPanel('description'),
+        FieldPanel('amount'),
+        FieldPanel('currency'),
+    ]
+
+register_snippet(PlanViewSet)
