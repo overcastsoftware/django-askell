@@ -104,6 +104,23 @@ class AskellClient:
         return response.json()
 
 
+    def import_payment_method(self, user, payment_method_data):
+        customer_reference = get_customer_reference_from_user(user)
+        path = '/customers/paymentmethod/import/'
+        data = {
+            "customer_reference": customer_reference,
+        }
+        assert "token" in payment_method_data.keys(), "payment_method_data must include 'token'"
+        assert "payment_processor_type" in payment_method_data.keys(), "payment_method_data must include 'payment_processor_type'"
+        assert "card_info" in payment_method_data.keys(), "payment_method_data must include 'card_info'"
+        assert "expiration_month" in payment_method_data.keys(), "payment_method_data must include 'expiration_month'"
+        assert "expiration_year" in payment_method_data.keys(), "payment_method_data must include 'expiration_year'"
+
+        data.update(**payment_method_data)
+        
+        response = requests.post(self._build_url(path), headers=self._auth, json=data)
+        
+        return response.json()
 
 
 client = AskellClient(ASKELL_SECRET_KEY, endpoint=ASKELL_ENDPOINT)
