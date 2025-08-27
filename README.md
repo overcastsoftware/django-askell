@@ -84,6 +84,9 @@ def payment_settled(request, event, data):
 
 ## Release notes
 
+### Version 0.1.19
+* Adding payment method import method
+
 ### Version 0.1.7
 * Fixed a bug in creating a customer
 
