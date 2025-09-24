@@ -6,6 +6,7 @@ from django.utils.translation import gettext as _
 
 from .webhooks import register_webhook_handler
 from .webhook_handlers import payment_created, payment_changed
+from .settings import ASKELL_REGISTER_DEFAULT_WEBHOOK_HANDLERS
 
 user_model = get_user_model()
 
@@ -53,8 +54,9 @@ class Payment(models.Model):
             'user': self.user.id if self.user else None,
         }
 
-register_webhook_handler(payment_created)
-register_webhook_handler(payment_changed)
+if ASKELL_REGISTER_DEFAULT_WEBHOOK_HANDLERS:
+    register_webhook_handler(payment_created)
+    register_webhook_handler(payment_changed)
 
 # @register_snippet
 # class Subscription(models.Model):

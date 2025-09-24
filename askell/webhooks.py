@@ -14,6 +14,10 @@ def register_webhook_handler(func):
         WEBHOOK_HANDLERS.append(func)
     return func
 
+def unregister_webhook_handler(func):
+    if func in WEBHOOK_HANDLERS:
+        WEBHOOK_HANDLERS.remove(func)
+    return func
 
 def run_webhook_handlers(request, event, data):
     for func in WEBHOOK_HANDLERS:

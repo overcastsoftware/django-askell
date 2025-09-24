@@ -84,6 +84,12 @@ def payment_settled(request, event, data):
 
 ## Release notes
 
+### Version 0.1.21
+* Fixing a bug in the settings module 
+
+### Version 0.1.20
+* Adding a setting to disable default webhook handlers. Also a new function to unregister webhook handlers.
+
 ### Version 0.1.19
 * Adding payment method import method
 

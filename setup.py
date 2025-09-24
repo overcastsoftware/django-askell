@@ -24,7 +24,7 @@ documentation_extras = [
 
 setup(
     name='django-askell',
-    version='0.1.19',
+    version='0.1.21',
     packages=['askell', 'askell.wagtail', 'askell.migrations', 'askell.management', 'askell.management.commands'],
     include_package_data=True,
     license='MIT',
@@ -41,6 +41,7 @@ setup(
         'Framework :: Wagtail :: 3',
         'Framework :: Wagtail :: 4',
         'Framework :: Wagtail :: 5',
+        'Framework :: Wagtail :: 6',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',

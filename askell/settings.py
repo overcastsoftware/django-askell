@@ -6,7 +6,7 @@ def get_setting(key, default_value=None):
 
     value = getattr(settings, key, None)
 
-    if value:
+    if value is not None:
         return value
 
     value = os.getenv(key)
@@ -29,4 +29,8 @@ ASKELL_CUSTOMER_REFERENCE_USER_FIELD = get_setting(
 
 ASKELL_SUBSCRIPTION_REFERENCE_USER_FIELD = get_setting(
     'ASKELL_SUBSCRIPTION_REFERENCE_USER_FIELD', 'pk'
+)
+
+ASKELL_REGISTER_DEFAULT_WEBHOOK_HANDLERS = get_setting(
+    'ASKELL_REGISTER_DEFAULT_WEBHOOK_HANDLERS', True
 )
