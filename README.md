@@ -84,6 +84,9 @@ def payment_settled(request, event, data):
 
 ## Release notes
 
+### Version 0.1.22
+* Support for refunding single payments
+
 ### Version 0.1.21
 * Fixing a bug in the settings module 
 
