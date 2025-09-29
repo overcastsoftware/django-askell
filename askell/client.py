@@ -121,6 +121,10 @@ class AskellClient:
         response = requests.post(self._build_url(path), headers=self._auth, json=data)
         
         return response.json()
-
+    
+    def refund_payment(self, uuid):
+        path = '/payments/{}/refund/'.format(uuid)
+        response = requests.post(self._build_url(path), headers=self._auth, json={})
+        return response.json()
 
 client = AskellClient(ASKELL_SECRET_KEY, endpoint=ASKELL_ENDPOINT)
