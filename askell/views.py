@@ -247,5 +247,5 @@ class CheckoutView(APIView):
             else:
                 return Response({'status': 'error', 'message': response['error']}, status=r.status_code)
 
-        except Exception as e:
+        except Exception:
             return Response({'status': 'error', 'message': _('Server error. Please try again later.')}, status=r.status_code)
