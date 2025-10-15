@@ -24,7 +24,7 @@ documentation_extras = [
 
 setup(
     name='django-askell',
-    version='0.1.22',
+    version='0.1.24',
     packages=['askell', 'askell.wagtail', 'askell.migrations', 'askell.management', 'askell.management.commands'],
     include_package_data=True,
     license='MIT',

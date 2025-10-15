@@ -84,6 +84,12 @@ def payment_settled(request, event, data):
 
 ## Release notes
 
+### Version 0.1.24
+* Checkout support updated
+
+### Version 0.1.23
+* Set default auto field to BigAutoField to prevent projects creating migrations for django-askell
+
 ### Version 0.1.22
 * Support for refunding single payments
 

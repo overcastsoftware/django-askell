@@ -94,14 +94,29 @@ class AskellClient:
             return {'status': 'error', 'message': "Could not create customer"}
 
 
-    def create_checkout(self, plan_variant_id, capture_only=False):
-        path = '/checkout/'
-        data = {
-            "plan_variant_id": plan_variant_id,
-            "capture_only": capture_only
-        }
+    def create_checkout(self, plan_variant_id=None, payment_processor_id=None, currency_code=None, amount=None, capture_only=False):
+        if plan_variant_id is None:
+            assert payment_processor_id is not None, "Either plan_variant_id or payment_processor_id must be provided"
+            assert currency_code is not None, "currency_code must be provided if payment_processor_id is provided"
+            data = {
+                "payment_processor": payment_processor_id,
+                "currency": currency_code,
+                "capture_only": capture_only
+            }
+            if amount is not None:
+                data["amount"] = amount
+        else:
+            data = {
+                "plan": plan_variant_id,
+                "capture_only": capture_only
+            }
+
+        path = '/checkouts/'
         response = requests.post(self._build_url(path), headers=self._auth, json=data)
-        return response.json()
+        if response.status_code < 300:
+            return {'status': 'success', 'response': response.json(), 'status_code': response.status_code}
+        else:
+            return {'status': 'error', 'message': "Could not create checkout", 'status_code': response.status_code}
 
 
     def import_payment_method(self, user, payment_method_data):

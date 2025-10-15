@@ -18,6 +18,7 @@ from .settings import ASKELL_WEBHOOK_SECRET, ASKELL_ENDPOINT, ASKELL_SECRET_KEY
 from .utils import get_customer_reference_from_user
 from .models import Payment
 from .webhooks import run_webhook_handlers
+from .client import client
 
 logger = logging.getLogger('django-askell')
 
@@ -231,21 +232,24 @@ class CheckoutView(APIView):
 
     def post(self, request):
         try:
-            headers = {"Authorization": f"Api-Key {ASKELL_SECRET_KEY}"}
+            plan_variant_id = request.data.get('plan', None)
+            capture_only = request.data.get('capture_only', False)
+            payment_processor_id = request.data.get('payment_processor', None)
+            currency_code = request.data.get('currency', None)
+            amount = request.data.get('amount', None)
 
-            post_data = {
-                "plan": request.data['plan'],
-                "capture_only": request.data.get('capture_only', False),
-            }
+            r = client.create_checkout(
+                plan_variant_id=plan_variant_id,
+                payment_processor_id=payment_processor_id,
+                currency_code=currency_code,
+                amount=amount,
+                capture_only=capture_only
+            )
 
-            url = f"{ASKELL_ENDPOINT}/checkouts/"
-            r = requests.post(url, headers=headers, json=post_data)
-            response = r.json()
-
-            if r.status_code < 300:
-                return Response({'status': 'success', 'response': response})
+            if r['status'] == 'success':
+                return Response({'status': 'success', 'response': r['response']}, status=r["status_code"])
             else:
-                return Response({'status': 'error', 'message': response['error']}, status=r.status_code)
+                return Response({'status': 'error', 'message': r['error']}, status=r["status_code"])
 
         except Exception:
-            return Response({'status': 'error', 'message': _('Server error. Please try again later.')}, status=r.status_code)
+            return Response({'status': 'error', 'message': _('Server error. Please try again later.')}, status=500)
