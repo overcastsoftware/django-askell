@@ -253,3 +253,54 @@ class CheckoutView(APIView):
 
         except Exception:
             return Response({'status': 'error', 'message': _('Server error. Please try again later.')}, status=500)
+
+
+@method_decorator(login_required, name='dispatch')
+class CheckoutSessionView(APIView):
+    sales_channel = None
+
+    def get_sales_channel(self, request):
+        return self.sales_channel or request.data.get('sales_channel')
+
+    def get_metadata(self, request):
+        return request.data.get('metadata')
+
+    def get_theme(self, request):
+        return request.data.get('theme')
+
+    def post(self, request):
+        try:
+            sales_channel = self.get_sales_channel(request)
+            if not sales_channel:
+                return Response(
+                    {
+                        'status': 'error',
+                        'message': _('sales_channel is required.'),
+                    },
+                    status=400,
+                )
+
+            r = client.create_checkout_session(
+                sales_channel=sales_channel,
+                user=request.user,
+                metadata=self.get_metadata(request),
+                theme=self.get_theme(request),
+                expires_in_seconds=request.data.get('expires_in_seconds'),
+            )
+
+            if r['status'] == 'success':
+                return Response(
+                    {'status': 'success', 'response': r['response']},
+                    status=r['status_code'],
+                )
+            return Response(
+                {
+                    'status': 'error',
+                    'message': r['message'],
+                    'response': r.get('response', {}),
+                },
+                status=r['status_code'],
+            )
+
+        except Exception:
+            return Response({'status': 'error', 'message': _('Server error. Please try again later.')}, status=500)

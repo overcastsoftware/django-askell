@@ -1,6 +1,6 @@
 import os
 
-from setuptools import setup
+from setuptools import find_packages, setup
 
 with open(os.path.join(os.path.dirname(__file__), 'README.md')) as readme:
     README = readme.read()
@@ -22,10 +22,15 @@ testing_extras = [
 documentation_extras = [
 ]
 
+release_extras = [
+    'build>=1.0',
+    'twine>=5.0',
+]
+
 setup(
     name='django-askell',
-    version='0.1.24',
-    packages=['askell', 'askell.wagtail', 'askell.migrations', 'askell.management', 'askell.management.commands'],
+    version='0.1.25',
+    packages=find_packages(exclude=['test_project', 'test_project.*']),
     include_package_data=True,
     license='MIT',
     description='Recurring payments solution Askell integration for Django and Wagtail (optional)',
@@ -34,6 +39,7 @@ setup(
     author='Overcast',
     author_email='hallo@overcast.is',
     long_description_content_type="text/markdown",
+    python_requires='>=3.9',
     classifiers=[
         'Environment :: Web Environment',
         'Framework :: Django',
@@ -43,7 +49,6 @@ setup(
         'Framework :: Wagtail :: 5',
         'Framework :: Wagtail :: 6',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
@@ -57,6 +62,7 @@ setup(
     install_requires=install_requires,
     extras_require={
         'testing': testing_extras,
-        'docs': documentation_extras
+        'docs': documentation_extras,
+        'release': release_extras,
     },
 )

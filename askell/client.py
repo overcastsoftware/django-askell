@@ -118,6 +118,70 @@ class AskellClient:
         else:
             return {'status': 'error', 'message': "Could not create checkout", 'status_code': response.status_code}
 
+    def create_checkout_session(
+        self,
+        sales_channel,
+        user=None,
+        customer_reference=None,
+        customer=None,
+        metadata=None,
+        theme=None,
+        expires_in_seconds=None,
+    ):
+        data = {
+            "sales_channel": sales_channel,
+        }
+
+        if user is not None and customer_reference is None and customer is None:
+            customer_reference = get_customer_reference_from_user(user)
+
+        if customer_reference is not None:
+            data["customer_reference"] = str(customer_reference)
+        if customer is not None:
+            data["customer"] = customer
+        if metadata is not None:
+            data["metadata"] = metadata
+        if theme is not None:
+            data["theme"] = theme
+        if expires_in_seconds is not None:
+            data["expires_in_seconds"] = expires_in_seconds
+
+        response = requests.post(
+            self._build_url("/v2/checkout-sessions/"),
+            headers=self._auth,
+            json=data,
+        )
+        if response.status_code < 300:
+            return {
+                "status": "success",
+                "response": response.json(),
+                "status_code": response.status_code,
+            }
+        return {
+            "status": "error",
+            "message": "Could not create checkout session",
+            "response": response.json(),
+            "status_code": response.status_code,
+        }
+
+    def get_checkout_session(self, token):
+        response = requests.get(
+            self._build_url("/v2/checkout-sessions/{}/".format(token)),
+            headers=self._auth,
+        )
+        if response.status_code < 300:
+            return {
+                "status": "success",
+                "response": response.json(),
+                "status_code": response.status_code,
+            }
+        return {
+            "status": "error",
+            "message": "Could not get checkout session",
+            "response": response.json(),
+            "status_code": response.status_code,
+        }
+
 
     def import_payment_method(self, user, payment_method_data):
         customer_reference = get_customer_reference_from_user(user)

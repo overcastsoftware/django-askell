@@ -76,13 +76,69 @@ def payment_settled(request, event, data):
     return True
 ```
 
+## V2 checkout sessions
+
+For product/contract based subscriptions, create a scoped checkout session on your Django server and pass the returned browser-safe token to `askell.js`. Do not expose `ASKELL_SECRET_KEY` in the browser.
+
+```python
+from askell.client import client
+
+
+def create_membership_checkout(request):
+    result = client.create_checkout_session(
+        sales_channel='memberships',
+        user=request.user,
+        metadata={'source': 'membership-page'},
+        expires_in_seconds=3600,
+    )
+    if result['status'] != 'success':
+        # handle result['response'] or result['message']
+        ...
+    return JsonResponse({'sessionToken': result['response']['token']})
+```
+
+The package also includes a logged-in helper endpoint at `/askell/checkout-session/`. You can post a sales channel reference to it, or subclass `CheckoutSessionView` and set `sales_channel` to keep the channel fixed server-side.
+
+```python
+from askell.views import CheckoutSessionView
+
+
+class MembershipCheckoutSessionView(CheckoutSessionView):
+    sales_channel = 'memberships'
+```
+
+Mount the widget with the token returned by your Django backend:
+
+```html
+<script src="https://js.askell.is/v2/askell.js"></script>
+<div id="askell-checkout"></div>
+<script>
+  fetch("/membership/checkout-session/", { method: "POST" })
+    .then((response) => response.json())
+    .then(({ sessionToken }) => {
+      Askell.mountCheckout("#askell-checkout", {
+        sessionToken: sessionToken,
+        onSuccess: function (result) {
+          console.log(result.contractId);
+        }
+      });
+    });
+</script>
+```
+
 ## TODO
 
 - [x] Document webhook handlers
 - [ ] Document views
-- [ ] Implement subscription handling
+- [x] Add V2 checkout session helper
+- [ ] Document product/contract entitlement helpers
 
 ## Release notes
+
+### Version 0.1.25
+* Add V2 checkout session client helper and Django view for scoped checkout sessions
+* Add README documentation for creating browser-safe checkout sessions for `askell.js`
+* Add release extra dependencies and safer PyPI release scripts
 
 ### Version 0.1.24
 * Checkout support updated

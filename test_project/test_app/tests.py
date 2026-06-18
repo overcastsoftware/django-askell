@@ -5,6 +5,7 @@ from django.test import TestCase
 from django.test.client import Client
 from django.contrib.auth.models import User
 
+from askell.client import AskellClient
 from askell.models import Payment
 
 http.client.HTTPConnection.debuglevel = 1
@@ -26,6 +27,101 @@ class BaseTestCase(TestCase):
         )
 
 class TestViews(BaseTestCase):
+
+    def test_client_create_checkout_session(self):
+        askell_client = AskellClient('secret-key', endpoint='https://askell.test/api')
+        with patch('askell.client.requests.post') as mock_post:
+            mock_post.return_value.status_code = 201
+            mock_post.return_value.json.return_value = {
+                'token': 'cs_test',
+                'status': 'pending',
+                'sales_channel': 'memberships',
+            }
+
+            response = askell_client.create_checkout_session(
+                sales_channel='memberships',
+                user=self.user,
+                metadata={'source': 'test'},
+                theme={'primary_color': '#0F766E'},
+                expires_in_seconds=3600,
+            )
+
+            self.assertEqual(response['status'], 'success')
+            self.assertEqual(response['response']['token'], 'cs_test')
+            mock_post.assert_called_once_with(
+                'https://askell.test/api/v2/checkout-sessions/',
+                headers={'Authorization': 'Api-Key secret-key'},
+                json={
+                    'sales_channel': 'memberships',
+                    'customer_reference': str(self.user.pk),
+                    'metadata': {'source': 'test'},
+                    'theme': {'primary_color': '#0F766E'},
+                    'expires_in_seconds': 3600,
+                },
+            )
+
+    def test_client_create_checkout_session_error_includes_response(self):
+        askell_client = AskellClient('secret-key', endpoint='https://askell.test/api')
+        with patch('askell.client.requests.post') as mock_post:
+            mock_post.return_value.status_code = 400
+            mock_post.return_value.json.return_value = {
+                'sales_channel': ['Sales channel not found for account.'],
+            }
+
+            response = askell_client.create_checkout_session(
+                sales_channel='missing',
+                customer_reference='customer-1',
+            )
+
+            self.assertEqual(response['status'], 'error')
+            self.assertEqual(response['status_code'], 400)
+            self.assertEqual(
+                response['response']['sales_channel'],
+                ['Sales channel not found for account.'],
+            )
+
+    def test_checkout_session_view_creates_session_for_logged_in_user(self):
+        with patch('askell.views.client.create_checkout_session') as mock_create:
+            mock_create.return_value = {
+                'status': 'success',
+                'status_code': 201,
+                'response': {
+                    'token': 'cs_test',
+                    'status': 'pending',
+                    'sales_channel': 'memberships',
+                },
+            }
+
+            response = self.client.post(
+                '/askell/checkout-session/',
+                data={
+                    'sales_channel': 'memberships',
+                    'metadata': {'source': 'test'},
+                    'theme': {'primary_color': '#0F766E'},
+                    'expires_in_seconds': 3600,
+                },
+                content_type='application/json',
+            )
+
+            self.assertEqual(response.status_code, 201)
+            self.assertEqual(response.json()['response']['token'], 'cs_test')
+            mock_create.assert_called_once_with(
+                sales_channel='memberships',
+                user=self.user,
+                metadata={'source': 'test'},
+                theme={'primary_color': '#0F766E'},
+                expires_in_seconds=3600,
+            )
+
+    def test_checkout_session_view_requires_sales_channel(self):
+        response = self.client.post(
+            '/askell/checkout-session/',
+            data={},
+            content_type='application/json',
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()['status'], 'error')
 
     def test_create_payment(self):
         payment_count_before = Payment.objects.count()
