@@ -29,7 +29,7 @@ release_extras = [
 
 setup(
     name='django-askell',
-    version='0.1.25',
+    version='0.1.26',
     packages=find_packages(exclude=['test_project', 'test_project.*']),
     include_package_data=True,
     license='MIT',

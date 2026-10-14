@@ -1,6 +1,11 @@
+import base64
+import hashlib
+import hmac
 import http.client
+import json
 from unittest.mock import patch
 
+from django.conf import settings
 from django.test import TestCase
 from django.test.client import Client
 from django.contrib.auth.models import User
@@ -180,3 +185,40 @@ class TestViews(BaseTestCase):
         self.assertEqual(payment_count_before, payment_count_after)
         payment.refresh_from_db()
         self.assertTrue(payment.state == "settled")
+
+    def post_webhook(self, event, data):
+        body = json.dumps({'event': event, 'ref': None, 'sender': 'tumi@overcast.is', 'data': data}).encode()
+        digest = hmac.new(settings.ASKELL_WEBHOOK_SECRET.encode(), body, hashlib.sha512).digest()
+        headers = {
+            'Hook-Hmac': base64.b64encode(digest).decode(),
+            'Hook-Event': event,
+        }
+        return self.client.post('/askell/webhook/', data=body, headers=headers, content_type='application/json')
+
+    def test_webhook_payment_changed_before_payment_created(self):
+        # A payment charged straight away can settle before its payment.created
+        # webhook has been handled, so payment.changed may arrive first.
+        data = {
+            "uuid": "5f0c1e2a-7d4b-4c55-9a51-3f0f5b0c2d11",
+            "amount": "2000.0000",
+            "currency": "ISK",
+            "description": "wesd",
+            "reference": "q324erdf2",
+            "state": "settled",
+            "created_at": "2024-02-16T12:52:36.334898Z",
+            "updated_at": "2024-02-16T12:52:37.450551Z",
+            "transactions": [],
+        }
+        response = self.post_webhook('payment.changed', data)
+        self.assertEqual(response.status_code, 200)
+
+        payment = Payment.objects.get(uuid=data['uuid'])
+        self.assertEqual(payment.state, 'settled')
+        self.assertEqual(payment.reference, 'q324erdf2')
+
+        # The late payment.created must not reset the payment to pending.
+        response = self.post_webhook('payment.created', dict(data, state='pending'))
+        self.assertEqual(response.status_code, 200)
+
+        payment.refresh_from_db()
+        self.assertEqual(payment.state, 'settled')
