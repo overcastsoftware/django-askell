@@ -126,6 +126,16 @@ Mount the widget with the token returned by your Django backend:
 </script>
 ```
 
+## Releasing
+
+Bump the version in `setup.py` and `release.sh`, add release notes below and commit. Then run:
+
+```bash
+./docker-release.sh
+```
+
+This builds the package and uploads it to PyPI from a `python:3.12-slim` container, so it doesn't depend on your local Python. It reads PyPI credentials from `~/.pypirc` or the `TWINE_USERNAME` and `TWINE_PASSWORD` environment variables, and refuses to run with uncommitted changes.
+
 ## TODO
 
 - [x] Document webhook handlers
