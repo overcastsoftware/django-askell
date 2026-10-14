@@ -135,6 +135,9 @@ Mount the widget with the token returned by your Django backend:
 
 ## Release notes
 
+### Version 0.1.26
+* The default `payment_changed` webhook handler creates the payment if `payment.created` hasn't been handled yet, instead of raising `Payment.DoesNotExist`
+
 ### Version 0.1.25
 * Add V2 checkout session client helper and Django view for scoped checkout sessions
 * Add README documentation for creating browser-safe checkout sessions for `askell.js`
