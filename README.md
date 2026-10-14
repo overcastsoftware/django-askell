@@ -126,6 +126,16 @@ Mount the widget with the token returned by your Django backend:
 </script>
 ```
 
+## Releasing
+
+Bump the version in `setup.py` and `release.sh`, add release notes below and commit. Then run:
+
+```bash
+./docker-release.sh
+```
+
+This builds the package and uploads it to PyPI from a `python:3.12-slim` container, so it doesn't depend on your local Python. It reads PyPI credentials from `~/.pypirc` or the `TWINE_USERNAME` and `TWINE_PASSWORD` environment variables, and refuses to run with uncommitted changes.
+
 ## TODO
 
 - [x] Document webhook handlers
@@ -134,6 +144,10 @@ Mount the widget with the token returned by your Django backend:
 - [ ] Document product/contract entitlement helpers
 
 ## Release notes
+
+### Version 0.1.26
+* The default `payment_changed` webhook handler creates the payment if `payment.created` hasn't been handled yet, instead of raising `Payment.DoesNotExist`
+* Add `docker-release.sh` for building and uploading releases from a Docker container
 
 ### Version 0.1.25
 * Add V2 checkout session client helper and Django view for scoped checkout sessions
