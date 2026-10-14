@@ -145,6 +145,10 @@ This builds the package and uploads it to PyPI from a `python:3.12-slim` contain
 
 ## Release notes
 
+### Version 0.1.26
+* The default `payment_changed` webhook handler creates the payment if `payment.created` hasn't been handled yet, instead of raising `Payment.DoesNotExist`
+* Add `docker-release.sh` for building and uploading releases from a Docker container
+
 ### Version 0.1.25
 * Add V2 checkout session client helper and Django view for scoped checkout sessions
 * Add README documentation for creating browser-safe checkout sessions for `askell.js`
